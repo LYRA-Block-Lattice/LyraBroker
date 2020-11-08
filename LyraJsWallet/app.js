@@ -53,8 +53,25 @@ function main() {
                     response.balances.forEach(function (balance) {
                         console.log('%s: %d', balance.ticker, balance.balance);
                     });
+
+                    var sendArgs = {
+                        privateKey: privateKey,
+                        amount: 9,
+                        destAccountId: 'LT8din6wm6SyfnqmmJN7jSnyrQjqAaRmixe2kKtTY4xpDBRtTxBmuHkJU9iMru5yqcNyL3Q21KDvHK45rkUS4f8tkXBBS3',
+                        ticker: 'LYR'
+                    };
+
+                    client.Send(sendArgs, function (err, response) {
+                        if (response.success)
+                            console.log('Send success!');
+                        else {
+                            console.log('Send failed.');
+                        }
+                    });
                 }
             });
+
+
         }
     });
     

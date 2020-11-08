@@ -133,5 +133,27 @@ namespace LyraBroker
 
             return new GetBalanceReply ();
         }
+
+        public override async Task<SendReply> Send(SendRequest request, ServerCallContext context)
+        {
+            try
+            {
+                var client = LyraRestClient.Create(_config["network"], Environment.OSVersion.ToString(), "LyraBroker", "1.0");
+                var wallet = new TransitWallet(request.PrivateKey, client);
+
+                var result = await wallet.SendAsync((decimal)request.Amount, request.DestAccountId, request.Ticker);
+
+                if (result == Lyra.Core.Blocks.APIResultCodes.Success)
+                {
+                    return new SendReply { Success = true };
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("In OpenWallet: " + ex.ToString());
+            }
+
+            return new SendReply { Success = false };
+        }
     }
 }
