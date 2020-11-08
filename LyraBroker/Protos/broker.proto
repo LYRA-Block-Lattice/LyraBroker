@@ -9,31 +9,16 @@ package broker;
 
 service BrokerRPC {
   rpc GetStatus (google.protobuf.Empty) returns (GetStatusReply);
-  rpc OpenWallet (OpenWalletRequest) returns (OpenWalletReply);
   rpc GetBalance (GetBalanceRequest) returns (GetBalanceReply);
   rpc Send (SendRequest) returns (SendReply);
-  rpc CloseWallet (CloseWalletRequest) returns (CloseWalletReply);
 }
 
-message OpenWalletRequest {
-	string privateKey = 1;
-}
-
-message OpenWalletReply {
-	string accountId = 1;
-	string walletId = 2;
-}
-
-message CloseWalletRequest {
-	string walletId = 1;
-}
-
-message CloseWalletReply {
-	bool success = 1;
+message GetStatusReply {
+	bool IsReady = 1;
 }
 
 message GetBalanceRequest {
-	string walletId = 1;
+	string privateKey = 1;
 }
 
 message GetBalanceReply {
@@ -42,21 +27,16 @@ message GetBalanceReply {
 
 message LyraBalance{
 	string ticker = 1;
-	int64 balance = 2;
-}
-
-message GetStatusReply {
-	bool IsReady = 1;
+	double balance = 2;
 }
 
 message SendRequest {
-	string walletId = 1;
+	string privateKey = 1;
 	double amount = 2;
 	string destAccountId = 3;
 	string ticker = 4;
 }
 
 message SendReply {
-	string walletId = 1;
-	bool success = 2;
+	bool success = 1;
 }

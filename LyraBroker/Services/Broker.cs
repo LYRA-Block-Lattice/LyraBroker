@@ -58,7 +58,7 @@ namespace LyraBroker
             };
         }
 
-        public override Task<OpenWalletReply> OpenWallet(OpenWalletRequest request, ServerCallContext context)
+/*        public override Task<OpenWalletReply> OpenWallet(OpenWalletRequest request, ServerCallContext context)
         {
             string accountId = null;
             string walletId = null;
@@ -101,30 +101,28 @@ namespace LyraBroker
             {
                 Success = true
             });
-        }
+        }*/
 
         public override async Task<GetBalanceReply> GetBalance(GetBalanceRequest request, ServerCallContext context)
         {
             try
             {
-                if(_store.Wallets.ContainsKey(request.WalletId))
+                var client = LyraRestClient.Create(_config["network"], Environment.OSVersion.ToString(), "LyraBroker", "1.0");
+                var wallet = new TransitWallet(request.PrivateKey, client);
+
+                var result = await wallet.ReceiveAsync();
+
+                if (result == Lyra.Core.Blocks.APIResultCodes.Success)
                 {
-                    var wallet = _store.Wallets[request.WalletId];
-
-                    var result = await wallet.ReceiveAsync();
-
-                    if(result == Lyra.Core.Blocks.APIResultCodes.Success)
+                    var blances = await wallet.GetBalanceAsync();
+                    if (blances != null)
                     {
-                        var blances = await wallet.GetBalanceAsync();
-                        if (blances != null)
+                        var msg = new GetBalanceReply();
+                        foreach (var kvp in blances)
                         {
-                            var msg = new GetBalanceReply();
-                            foreach (var kvp in blances)
-                            {
-                                msg.Balances.Add(new LyraBalance { Ticker = kvp.Key, Balance = kvp.Value });
-                            }
-                            return msg;
+                            msg.Balances.Add(new LyraBalance { Ticker = kvp.Key, Balance = kvp.Value / 100000000 });
                         }
+                        return msg;
                     }
                 }
             }
