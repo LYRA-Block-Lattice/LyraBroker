@@ -2,7 +2,6 @@ using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Lyra.Core.API;
 using Lyra.Data.Crypto;
-using LyraBroker.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,7 +16,6 @@ namespace LyraBroker
     {
         private readonly ILogger<Broker> _logger;
         private readonly IConfiguration _config;
-        private readonly ITransitWalletStore _store;
 
         private LyraRestClient _client;
         private LyraRestClient Client
@@ -33,12 +31,10 @@ namespace LyraBroker
         }
 
         public Broker(ILogger<Broker> logger, 
-            IConfiguration configuration,
-            ITransitWalletStore store)
+            IConfiguration configuration)
         {
             _logger = logger;
             _config = configuration;
-            _store = store;
         }
 
         public override async Task<GetStatusReply> GetStatus(Empty request, ServerCallContext context)
