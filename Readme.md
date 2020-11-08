@@ -2,15 +2,17 @@
 
 Lyra Broker is a gateway for any platform/languages to connect to the Lyra blockchain.
 
-Lyra Broker use standard gRPC to provide services. Any client/systems can talk by gRPC can use the broker.
-
 # Install
 
 run LyraBorker
 
 # Client Intergration
 
+Lyra Broker use standard gRPC to provide services. Any client/systems can talk by gRPC can use the broker.
+
 We have a wallet running on Node-JS for demo: LyraJsWallet. More examples comming soon.
+
+The Google protobuf file is here: https://github.com/LYRA-Block-Lattice/LyraBroker/blob/master/LyraBroker/Protos/broker.proto
 
 # Limitition
 
