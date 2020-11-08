@@ -46,10 +46,25 @@ function main() {
             // open wallet
             client.OpenWallet({ privateKey: privateKey }, function (err, response) {
                 console.log('Wallet\'s ID is: ', response.walletId);
+                console.log('Wallet\'s public address is: ', response.accountId);
 
                 var id = response.walletId;
+
+                client.GetBalance({ walletId: response.walletId }, function (err, response) {
+                    if (response.balances == null)
+                        console.log('Can\'t get balance.');
+                    else if (response.balances.length == 0)
+                        console.log('Wallet empty.');
+                    else {
+                        console.log('Your balance is:');
+                        response.balances.forEach(function (ticker, balance) {
+                            console.log('%s: %d', ticker, balance);
+                        });
+                    }
+                });
+
                 client.CloseWallet({ walletId: response.walletId }, function (err, response) {
-                    console.log('Wallet with ID ${id} is closed.');
+                    console.log('Wallet %s is closed.', id);
                 });
             });
         }

@@ -33,7 +33,7 @@ message CloseWalletReply {
 }
 
 message GetBalanceRequest {
-	string accountId = 1;
+	string walletId = 1;
 }
 
 message GetBalanceReply {
@@ -50,13 +50,13 @@ message GetStatusReply {
 }
 
 message SendRequest {
-	string accountId = 1;
+	string walletId = 1;
 	double amount = 2;
 	string destAccountId = 3;
 	string ticker = 4;
 }
 
 message SendReply {
-	string accountId = 1;
+	string walletId = 1;
 	bool success = 2;
 }
