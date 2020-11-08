@@ -26,6 +26,6 @@ For now we only provides these basic API:
 # Security concerns
 
 Lyra Broker is NOT supposed to be running on public server because it knows your private keys. 
-Please run it in private/trusted environment. And more importantly, never use any other's Lyra Broker services or your funds could be lost.
+Please run it in private/trusted environment. And more importantly, never use any other's Lyra Broker services or your funds could lost.
 
 
