@@ -4,7 +4,11 @@ Lyra Broker is a gateway for any platform/languages to connect to the Lyra block
 
 # Install
 
-run LyraBorker
+modify appsettings.json for LyraBroker, change
+
+``"network": "testnet"``
+
+to testnet/mainnet. then run LyraBorker.
 
 # Client Intergration
 
