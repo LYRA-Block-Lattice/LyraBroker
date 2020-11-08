@@ -16,7 +16,7 @@ The Google protobuf file is here: https://github.com/LYRA-Block-Lattice/LyraBrok
 
 # Limitition
 
-For now we only provides 3 basic API:
+For now we only provides these basic API:
 
 * CreateAccount: create a new account (private/public key pair) for Lyra;
 * GetStatus: get the current status of Lyra network;
