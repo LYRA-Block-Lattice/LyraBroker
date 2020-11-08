@@ -3,9 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30626.31
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LyraBroker", "LyraBroker\LyraBroker.csproj", "{FEA45895-C0C5-47F2-A9AC-3812BC1BD1FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LyraBroker", "LyraBroker\LyraBroker.csproj", "{FEA45895-C0C5-47F2-A9AC-3812BC1BD1FE}"
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "LyraJsWallet", "LyraJsWallet\LyraJsWallet.njsproj", "{B38E77B8-8274-4D6F-BFF6-50E7D2946694}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{13345848-F604-443C-A571-1F47E917E341}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.md = Readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
