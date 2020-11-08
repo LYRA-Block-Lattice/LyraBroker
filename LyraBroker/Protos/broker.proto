@@ -20,7 +20,7 @@ message CreateAccountReply {
 }
 
 message GetStatusReply {
-	bool IsReady = 1;
+	bool isReady = 1;
 	string networkId = 2;
 }
 

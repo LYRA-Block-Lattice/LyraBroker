@@ -37,16 +37,16 @@ function main() {
 
     // generate a new private/account ID pair
     client.CreateAccount({}, function (err, response) {
-        console.log('You just create a new Lyra account:\n')
+        console.log('You just created a new Lyra account:\n')
         console.log('Your private key is %s\n', response.privateKey);
         console.log('Your account ID is %s\n', response.accountId);
     });
 
     // check api node status
     client.GetStatus({}, function (err, response) {
-        console.log('Lyra network %s is ready: %s\n', response.networkId, response.IsReady);
+        console.log('Lyra network %s is ready: %s\n', response.networkId, response.isReady);
         console.log('\nDoing wallet %s\n', privateKey);
-        if (response.IsReady) {
+        if (response.isReady) {
             client.GetBalance({ privateKey: privateKey }, function (err, response) {
                 if (response.balances == null)
                     console.log('Can\'t get balance.');
