@@ -32,16 +32,20 @@ const privateKey = '2vWJCzsWDVWeLf5YnrqMnZPm5J33zupDaEimc1QBnqHgVQR2nR';
 function main() {
     var client = new lyrabroker.BrokerRPC('localhost:5001',
         grpc.credentials.createInsecure());
-    //var user;
-    //if (process.argv.length >= 3) {
-    //    user = process.argv[2];
-    //} else {
-    //    user = 'world';
-    //}
+
+
+
+    // generate a new private/account ID pair
+    client.CreateAccount({}, function (err, response) {
+        console.log('You just create a new Lyra account:\n')
+        console.log('Your private key is %s\n', response.privateKey);
+        console.log('Your account ID is %s\n', response.accountId);
+    });
 
     // check api node status
     client.GetStatus({}, function (err, response) {
-        console.log('Lyra network is ready:', response.IsReady);
+        console.log('Lyra network %s is ready: %s\n', response.networkId, response.IsReady);
+        console.log('\nDoing wallet %s\n', privateKey);
         if (response.IsReady) {
             client.GetBalance({ privateKey: privateKey }, function (err, response) {
                 if (response.balances == null)
@@ -56,14 +60,23 @@ function main() {
 
                     var sendArgs = {
                         privateKey: privateKey,
-                        amount: 9,
+                        amount: 10,
                         destAccountId: 'LT8din6wm6SyfnqmmJN7jSnyrQjqAaRmixe2kKtTY4xpDBRtTxBmuHkJU9iMru5yqcNyL3Q21KDvHK45rkUS4f8tkXBBS3',
                         ticker: 'LYR'
                     };
 
+                    console.log('sending 10 LYR to %s ...\n', sendArgs.destAccountId);
+
                     client.Send(sendArgs, function (err, response) {
-                        if (response.success)
+                        if (response.success) {
                             console.log('Send success!');
+                            client.GetBalance({ privateKey: privateKey }, function (err, response) {
+                                console.log('Your new balance is:');
+                                response.balances.forEach(function (balance) {
+                                    console.log('%s: %d', balance.ticker, balance.balance);
+                                });
+                            });
+                        }                            
                         else {
                             console.log('Send failed.');
                         }
@@ -77,7 +90,7 @@ function main() {
     
 
 
-    rl.question("Press any key to exit.", function (country) {
+    rl.question("Press any key to exit.\n\n", function () {
         console.log("Goodbye!");
         rl.close();
     });

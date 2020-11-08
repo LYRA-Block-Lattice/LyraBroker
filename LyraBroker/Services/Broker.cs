@@ -37,6 +37,16 @@ namespace LyraBroker
             _config = configuration;
         }
 
+        public override Task<CreateAccountReply> CreateAccount(Empty request, ServerCallContext context)
+        {
+             (string privateKey, string accountId) = Signatures.GenerateWallet();
+            return Task.FromResult(new CreateAccountReply
+            {
+                PrivateKey = privateKey,
+                AccountId = accountId
+            });
+        }
+
         public override async Task<GetStatusReply> GetStatus(Empty request, ServerCallContext context)
         {
             bool LyraIsReady = false;
@@ -50,54 +60,10 @@ namespace LyraBroker
 
             return new GetStatusReply
             {
-                IsReady = LyraIsReady
+                IsReady = LyraIsReady,
+                NetworkId = _config["network"]
             };
         }
-
-/*        public override Task<OpenWalletReply> OpenWallet(OpenWalletRequest request, ServerCallContext context)
-        {
-            string accountId = null;
-            string walletId = null;
-            try
-            {
-                accountId = Signatures.GetAccountIdFromPrivateKey(request.PrivateKey);
-                if(_store.Wallets.Values.Any(a => a.AccountId == accountId))
-                {
-                    var wallet = _store.Wallets.Values.First(a => a.AccountId == accountId);
-                    walletId = wallet.UniqId;
-                }
-                else
-                {
-                    var client = LyraRestClient.Create(_config["network"], Environment.OSVersion.ToString(), "LyraBroker", "1.0");
-                    var wallet = new TransitWallet(request.PrivateKey, client);
-                    _store.Wallets.AddOrUpdate(wallet.UniqId, wallet, (k, v) => wallet);
-                    walletId = wallet.UniqId;
-                }
-            }
-            catch(Exception ex)
-            {
-                _logger.LogWarning("In OpenWallet: " + ex.ToString());
-            }
-            return Task.FromResult(new OpenWalletReply
-            {
-                AccountId = accountId,
-                WalletId = walletId
-            });
-        }
-
-        public override Task<CloseWalletReply> CloseWallet(CloseWalletRequest request, ServerCallContext context)
-        {
-            if (_store.Wallets.Values.Any(a => a.UniqId == request.WalletId))
-            {
-                var wallet = _store.Wallets.Values.First(a => a.UniqId == request.WalletId);
-                _store.Wallets.Remove(request.WalletId, out _);
-            }
-
-            return Task.FromResult(new CloseWalletReply
-            {
-                Success = true
-            });
-        }*/
 
         public override async Task<GetBalanceReply> GetBalance(GetBalanceRequest request, ServerCallContext context)
         {

@@ -16,6 +16,7 @@ We have a wallet running on Node-JS for demo: LyraJsWallet. More examples commin
 
 For now we only provides 3 basic API:
 
+* CreateAccount: create a new account (private/public key pair) for Lyra;
 * GetStatus: get the current status of Lyra network;
 * GetBalance: get latest balance of account. (implicy receive);
 * Send: send funds to other account.

@@ -8,13 +8,20 @@ option csharp_namespace = "LyraBroker";
 package broker;
 
 service BrokerRPC {
+  rpc CreateAccount (google.protobuf.Empty) returns (CreateAccountReply);
   rpc GetStatus (google.protobuf.Empty) returns (GetStatusReply);
   rpc GetBalance (GetBalanceRequest) returns (GetBalanceReply);
   rpc Send (SendRequest) returns (SendReply);
 }
 
+message CreateAccountReply {
+	string privateKey = 1;
+	string accountId = 2;
+}
+
 message GetStatusReply {
 	bool IsReady = 1;
+	string networkId = 2;
 }
 
 message GetBalanceRequest {
