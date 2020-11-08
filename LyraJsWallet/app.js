@@ -21,21 +21,44 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+} 
+
+const privateKey = '2vWJCzsWDVWeLf5YnrqMnZPm5J33zupDaEimc1QBnqHgVQR2nR';
+
 function main() {
     var client = new lyrabroker.BrokerRPC('localhost:5001',
         grpc.credentials.createInsecure());
-    var user;
-    if (process.argv.length >= 3) {
-        user = process.argv[2];
-    } else {
-        user = 'world';
-    }
-    client.GetStatus({ }, function (err, response) {
-        console.log('Lyra network is ready:', response.IsReady);
-    });
+    //var user;
+    //if (process.argv.length >= 3) {
+    //    user = process.argv[2];
+    //} else {
+    //    user = 'world';
+    //}
 
-    rl.question("Where do you live ? ", function (country) {
-        console.log(`${name}, is a citizen of ${country}`);
+    // check api node status
+    client.GetStatus({}, function (err, response) {
+        console.log('Lyra network is ready:', response.IsReady);
+        if (response.IsReady) {
+            // open wallet
+            client.OpenWallet({ privateKey: privateKey }, function (err, response) {
+                console.log('Wallet\'s ID is: ', response.walletId);
+
+                var id = response.walletId;
+                client.CloseWallet({ walletId: response.walletId }, function (err, response) {
+                    console.log('Wallet with ID ${id} is closed.');
+                });
+            });
+        }
+    });
+    
+
+
+    rl.question("Press any key to exit.", function (country) {
+        console.log("Goodbye!");
         rl.close();
     });
 }
