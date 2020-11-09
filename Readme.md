@@ -34,7 +34,7 @@ For now we only provides these basic API:
 * Send: send funds to other account.
 * GetTransactions: query transaction history for a Lyra account.
 
-For advanced features of Lyra, such as token creation, NFT, etc. please use Lyra native web API.
+For advanced features of Lyra, such as token creation, NFT, etc. please use Lyra native web API instead.
 
 # Security concerns
 
