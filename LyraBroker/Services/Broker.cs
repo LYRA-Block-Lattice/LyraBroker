@@ -1,6 +1,8 @@
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Lyra.Core.API;
+using Lyra.Core.Blocks;
+using Lyra.Data.API;
 using Lyra.Data.Crypto;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -30,7 +32,7 @@ namespace LyraBroker
             }
         }
 
-        public Broker(ILogger<Broker> logger, 
+        public Broker(ILogger<Broker> logger,
             IConfiguration configuration)
         {
             _logger = logger;
@@ -39,7 +41,7 @@ namespace LyraBroker
 
         public override Task<CreateAccountReply> CreateAccount(Empty request, ServerCallContext context)
         {
-             (string privateKey, string accountId) = Signatures.GenerateWallet();
+            (string privateKey, string accountId) = Signatures.GenerateWallet();
             return Task.FromResult(new CreateAccountReply
             {
                 PrivateKey = privateKey,
@@ -54,7 +56,8 @@ namespace LyraBroker
             {
                 LyraIsReady = (await Client.GetSyncState()).SyncState == Lyra.Data.API.ConsensusWorkingMode.Normal;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 _logger.LogWarning("Failed to get sync state: " + ex.Message);
             }
 
@@ -79,7 +82,7 @@ namespace LyraBroker
                     var blances = await wallet.GetBalanceAsync();
                     if (blances != null)
                     {
-                        var msg = new GetBalanceReply();
+                        var msg = new GetBalanceReply { AccountId = wallet.AccountId };
                         foreach (var kvp in blances)
                         {
                             msg.Balances.Add(new LyraBalance { Ticker = kvp.Key, Balance = kvp.Value / 100000000 });
@@ -88,12 +91,12 @@ namespace LyraBroker
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogWarning("In OpenWallet: " + ex.ToString());
             }
 
-            return new GetBalanceReply ();
+            return new GetBalanceReply();
         }
 
         public override async Task<SendReply> Send(SendRequest request, ServerCallContext context)
@@ -116,6 +119,44 @@ namespace LyraBroker
             }
 
             return new SendReply { Success = false };
+        }
+
+        public override async Task<GetTransactionsReply> GetTransactions(GetTransactionsRequest request, ServerCallContext context)
+        {
+            var resp = new GetTransactionsReply { };
+            try
+            {
+                var client = LyraRestClient.Create(_config["network"], Environment.OSVersion.ToString(), "LyraBroker", "1.0");
+                var result = await client.SearchTransactions(request.AccountId,
+                            request.StartTime.ToDateTime().Ticks,
+                            request.EndTime.ToDateTime().Ticks,
+                            request.Count);
+
+                if(result.ResultCode == APIResultCodes.Success)
+                {
+                    for (int i = 0; i < result.Transactions.Count; i++)
+                    {
+                        var txDesc = result.Transactions[i];
+                        var tx = new LyraTransaction
+                        {
+                            AccountId = txDesc.AccountId,
+                            Time = Timestamp.FromDateTime(txDesc.TimeStamp),
+                            IsReceive = txDesc.IsReceive,
+                            PeerAccountId = txDesc.PeerAccountId,
+                            BalanceChange = (bool)(txDesc.Changes?.ContainsKey(LyraGlobal.OFFICIALTICKERCODE)) ? txDesc.Changes[LyraGlobal.OFFICIALTICKERCODE] / LyraGlobal.TOKENSTORAGERITO : 0,
+                            Balance = (bool)(txDesc.Balances?.ContainsKey(LyraGlobal.OFFICIALTICKERCODE)) ? txDesc.Balances[LyraGlobal.OFFICIALTICKERCODE] / LyraGlobal.TOKENSTORAGERITO : 0,
+                        };
+
+                        resp.Transactions.Add(tx);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("In OpenWallet: " + ex.ToString());
+            }
+
+            return resp;
         }
     }
 }

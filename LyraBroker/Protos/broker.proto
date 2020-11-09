@@ -12,6 +12,7 @@ service BrokerRPC {
   rpc GetStatus (google.protobuf.Empty) returns (GetStatusReply);
   rpc GetBalance (GetBalanceRequest) returns (GetBalanceReply);
   rpc Send (SendRequest) returns (SendReply);
+  rpc GetTransactions (GetTransactionsRequest) returns (GetTransactionsReply);
 }
 
 message CreateAccountReply {
@@ -29,7 +30,8 @@ message GetBalanceRequest {
 }
 
 message GetBalanceReply {
-	repeated LyraBalance balances = 1;
+	string accountId = 1;
+	repeated LyraBalance balances = 2;
 }
 
 message LyraBalance{
@@ -46,4 +48,24 @@ message SendRequest {
 
 message SendReply {
 	bool success = 1;
+}
+
+message GetTransactionsRequest {
+	string accountId = 1;
+	google.protobuf.Timestamp startTime = 2;
+	google.protobuf.Timestamp endTime = 3;
+	int32 count = 4;
+}
+
+message GetTransactionsReply {
+	repeated LyraTransaction Transactions = 1;
+}
+
+message LyraTransaction {
+	string accountId = 1;
+	google.protobuf.Timestamp time = 2;
+	bool isReceive = 3;			// only send and receive for tx. 
+	string peerAccountId = 4;	// send to or receive from
+	double balanceChange = 5;	// the delta of LYR balance, +d for receive, -d for send.
+	double balance = 6;			// the balance of LYR
 }

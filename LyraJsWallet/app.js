@@ -3,6 +3,7 @@
 var PROTO_PATH = __dirname + '/../LyraBroker/Protos/broker.proto';
 
 var grpc = require('grpc');
+var google = require('google-protobuf');
 var protoLoader = require('@grpc/proto-loader');
 var packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
@@ -26,6 +27,12 @@ function sleep(ms) {
         setTimeout(resolve, ms);
     });
 } 
+
+Date.prototype.addDays = function (days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+}
 
 const privateKey = '2vWJCzsWDVWeLf5YnrqMnZPm5J33zupDaEimc1QBnqHgVQR2nR';
 
@@ -53,6 +60,7 @@ function main() {
                 else if (response.balances.length == 0)
                     console.log('Wallet empty.');
                 else {
+                    var myAccountId = response.accountId;
                     console.log('Your balance is:');
                     response.balances.forEach(function (balance) {
                         console.log('%s: %d', balance.ticker, balance.balance);
@@ -69,11 +77,36 @@ function main() {
 
                     client.Send(sendArgs, function (err, response) {
                         if (response.success) {
-                            console.log('Send success!');
+                            console.log('Send success!\n');
                             client.GetBalance({ privateKey: privateKey }, function (err, response) {
                                 console.log('Your new balance is:');
                                 response.balances.forEach(function (balance) {
                                     console.log('%s: %d', balance.ticker, balance.balance);
+                                });
+
+                                var now = new Date();
+                                var start = now.addDays(-1);
+
+                                var nows = Math.floor(now.getTime() / 1000);
+                                var starts = Math.floor(start.getTime() / 1000);
+
+                                var txSearchArgs = {
+                                    accountId: myAccountId,
+                                    startTime: {seconds: starts},
+                                    endTime: { seconds: nows },      // last 24 hours
+                                    count: 1000
+                                };
+
+                                client.GetTransactions(txSearchArgs, function (err, response) {
+                                    response.Transactions.forEach(function (tx) {
+                                        console.log('Time is: %s\nTransaction: %s\nPeer Account ID: %s\nBalance Changes: %d\nBalance: %d\n',
+                                            new Date(tx.time.seconds * 1000),
+                                            tx.isReceive ? "Receive" : "Send",
+                                            tx.peerAccountId,
+                                            tx.balanceChange,
+                                            tx.balance
+                                        );
+                                    });
                                 });
                             });
                         }                            
