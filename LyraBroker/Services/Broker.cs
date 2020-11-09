@@ -142,10 +142,20 @@ namespace LyraBroker
                             AccountId = txDesc.AccountId,
                             Time = Timestamp.FromDateTime(txDesc.TimeStamp),
                             IsReceive = txDesc.IsReceive,
-                            PeerAccountId = txDesc.PeerAccountId,
-                            BalanceChange = (bool)(txDesc.Changes?.ContainsKey(LyraGlobal.OFFICIALTICKERCODE)) ? txDesc.Changes[LyraGlobal.OFFICIALTICKERCODE] / LyraGlobal.TOKENSTORAGERITO : 0,
-                            Balance = (bool)(txDesc.Balances?.ContainsKey(LyraGlobal.OFFICIALTICKERCODE)) ? txDesc.Balances[LyraGlobal.OFFICIALTICKERCODE] / LyraGlobal.TOKENSTORAGERITO : 0,
+                            PeerAccountId = txDesc.PeerAccountId
                         };
+
+                        if (txDesc.Changes == null || !txDesc.Changes.ContainsKey(LyraGlobal.OFFICIALTICKERCODE))
+                            tx.BalanceChange = 0;
+                        else
+                            tx.BalanceChange = txDesc.Changes[LyraGlobal.OFFICIALTICKERCODE] / LyraGlobal.TOKENSTORAGERITO;
+
+                        if (txDesc.Balances == null || !txDesc.Balances.ContainsKey(LyraGlobal.OFFICIALTICKERCODE))
+                            tx.Balance = 0;
+                        else
+                            tx.Balance = txDesc.Balances[LyraGlobal.OFFICIALTICKERCODE] / LyraGlobal.TOKENSTORAGERITO;
+
+
 
                         resp.Transactions.Add(tx);
                     }

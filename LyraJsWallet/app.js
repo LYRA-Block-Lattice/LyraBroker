@@ -34,6 +34,10 @@ Date.prototype.addDays = function (days) {
     return date;
 }
 
+function AddMinutesToDate(date, minutes) {
+    return new Date(date.getTime() + minutes * 60000);
+}
+
 const privateKey = '2vWJCzsWDVWeLf5YnrqMnZPm5J33zupDaEimc1QBnqHgVQR2nR';
 
 function main() {
@@ -85,7 +89,7 @@ function main() {
                                 });
 
                                 var now = new Date();
-                                var start = now.addDays(-1);
+                                var start = AddMinutesToDate(now, -30);
 
                                 var nows = Math.floor(now.getTime() / 1000);
                                 var starts = Math.floor(start.getTime() / 1000);
@@ -99,7 +103,7 @@ function main() {
 
                                 client.GetTransactions(txSearchArgs, function (err, response) {
                                     response.Transactions.forEach(function (tx) {
-                                        console.log('Time is: %s\nTransaction: %s\nPeer Account ID: %s\nBalance Changes: %d\nBalance: %d\n',
+                                        console.log('Time is: %s\nTransaction: %s\nPeer Account ID: %s\nLYR Balance Changes: %d\nLYR Balance: %d\n',
                                             new Date(tx.time.seconds * 1000),
                                             tx.isReceive ? "Receive" : "Send",
                                             tx.peerAccountId,
