@@ -32,6 +32,7 @@ For now we only provides these basic API:
 * GetStatus: get the current status of Lyra network;
 * GetBalance: get latest balance of account. (implicy receive);
 * Send: send funds to other account.
+* GetTransactions: query transaction history for a Lyra account.
 
 # Security concerns
 
