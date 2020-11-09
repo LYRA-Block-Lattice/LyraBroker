@@ -34,6 +34,8 @@ For now we only provides these basic API:
 * Send: send funds to other account.
 * GetTransactions: query transaction history for a Lyra account.
 
+For advanced features of Lyra, such as token creation, NFT, etc. please use Lyra native web API.
+
 # Security concerns
 
 Lyra Broker is NOT supposed to be running on public server because it knows your private keys. 
