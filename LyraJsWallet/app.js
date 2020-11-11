@@ -41,7 +41,7 @@ function AddMinutesToDate(date, minutes) {
 const privateKey = '2vWJCzsWDVWeLf5YnrqMnZPm5J33zupDaEimc1QBnqHgVQR2nR';
 
 function main() {
-    var client = new lyrabroker.BrokerRPC('localhost:5001',
+    var client = new lyrabroker.BrokerRPC('172.20.79.2:80',
         grpc.credentials.createInsecure());
 
 

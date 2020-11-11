@@ -2,7 +2,7 @@
 
 Lyra Broker is a gateway for any platform/languages to connect to the Lyra blockchain.
 
-# Install
+# Build
 
 Build Lyra Core: https://github.com/LYRA-Block-Lattice/Lyra-Core, it will generate Lyra.Data.dll.
 
@@ -13,6 +13,11 @@ modify appsettings.json for LyraBroker, change
 ``"network": "testnet"``
 
 to testnet/mainnet. then run LyraBorker.
+
+# Docker Setup
+
+	docker pull wizdy/lyrabroker:latest
+	docker run -it -p 3505:3505 wizdy/lyrabroker
 
 # Client Intergration
 
