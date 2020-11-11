@@ -62,10 +62,13 @@ message GetTransactionsReply {
 }
 
 message LyraTransaction {
-	string accountId = 1;
+	int64 height = 1;
 	google.protobuf.Timestamp time = 2;
 	bool isReceive = 3;			// only send and receive for tx. 
-	string peerAccountId = 4;	// send to or receive from
-	double balanceChange = 5;	// the delta of LYR balance, +d for receive, -d for send.
-	double balance = 6;			// the balance of LYR
+	string sendAccountId = 4;	// sender's address
+	string sendHash = 5;		
+	string recvAccountId = 6;	// receiver's address
+	string recvHash = 7;
+	double balanceChange = 8;	// the delta of LYR balance, +d for receive, -d for send.
+	double balance = 9;			// the balance of LYR
 }

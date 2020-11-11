@@ -139,10 +139,14 @@ namespace LyraBroker
                         var txDesc = result.Transactions[i];
                         var tx = new LyraTransaction
                         {
-                            AccountId = txDesc.AccountId,
+                            Height = txDesc.Height,
                             Time = Timestamp.FromDateTime(txDesc.TimeStamp),
                             IsReceive = txDesc.IsReceive,
-                            PeerAccountId = txDesc.PeerAccountId
+
+                            SendAccountId = txDesc.SendAccountId ?? "",
+                            SendHash = txDesc.SendHash ?? "",
+                            RecvAccountId = txDesc.RecvAccountId,
+                            RecvHash = txDesc.RecvHash ?? ""        // protobuf not like null
                         };
 
                         if (txDesc.Changes == null || !txDesc.Changes.ContainsKey(LyraGlobal.OFFICIALTICKERCODE))

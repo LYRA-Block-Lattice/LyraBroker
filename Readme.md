@@ -28,16 +28,9 @@ For more language support please visit: https://grpc.io/docs/languages/
 
 For now we only provides these basic API:
 
-* CreateAccount(): create a new account (private/public key pair) for Lyra.
-	returns: (string privateKey, string accountId)
-	
-* GetStatus(): get the current status of Lyra network.
-	returns: (bool isReady, string networkId)
-
-* GetBalance(string privateKey): get latest balance of account. (implicit receive);
-	returns: (string accountId, LyraBalance[] balances)
-	LyraBalance: {string ticker, double balance}
-
+* CreateAccount: create a new account (private/public key pair) for Lyra.
+* GetStatus: get the current status of Lyra network.
+* GetBalance: get latest balance of account. (implicit receive);
 * Send: send funds to other account.
 * GetTransactions: query transaction history for a Lyra account.
 

@@ -98,15 +98,18 @@ function main() {
                                     accountId: myAccountId,
                                     startTime: {seconds: starts},
                                     endTime: { seconds: nows },      // last 24 hours
-                                    count: 1000
+                                    count: 30
                                 };
 
                                 client.GetTransactions(txSearchArgs, function (err, response) {
+                                    console.log("\n");
                                     response.Transactions.forEach(function (tx) {
-                                        console.log('Time is: %s\nTransaction: %s\nPeer Account ID: %s\nLYR Balance Changes: %d\nLYR Balance: %d\n',
+                                        console.log('Height: %d\nTime is: %s\nTransaction: %s\nSender Account ID: %s\nReceiver Account ID: %s\nLYR Balance Changes: %d\nLYR Balance: %d\n',
+                                            tx.height,
                                             new Date(tx.time.seconds * 1000),
                                             tx.isReceive ? "Receive" : "Send",
-                                            tx.peerAccountId,
+                                            tx.sendAccountId,
+                                            tx.recvAccountId,
                                             tx.balanceChange,
                                             tx.balance
                                         );
