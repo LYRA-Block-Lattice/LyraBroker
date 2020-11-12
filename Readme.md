@@ -33,7 +33,7 @@ For now we only provides these basic API:
 * GetStatus: get the current status of Lyra network.
 * GetBalance: get latest balance of account. (implicit receive);
 * Send: send funds to other account.
-* GetTransactions: query transaction history for a Lyra account.
+* GetTransactions: query transaction history for a Lyra account. (Note: This API only show change/balance of LYR)
 
 For advanced features of Lyra, such as token creation, NFT, etc. please use Lyra native web API instead.
 
