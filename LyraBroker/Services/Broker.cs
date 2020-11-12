@@ -19,19 +19,6 @@ namespace LyraBroker
         private readonly ILogger<Broker> _logger;
         private readonly IConfiguration _config;
 
-        private LyraRestClient _client;
-        private LyraRestClient Client
-        {
-            get
-            {
-                if (_client == null)
-                {
-                    _client = LyraRestClient.Create(_config["network"], Environment.OSVersion.ToString(), "LyraWalletGateway", "1.0");
-                }
-                return _client;
-            }
-        }
-
         public Broker(ILogger<Broker> logger,
             IConfiguration configuration)
         {
@@ -54,7 +41,8 @@ namespace LyraBroker
             bool LyraIsReady = false;
             try
             {
-                LyraIsReady = (await Client.GetSyncState()).SyncState == Lyra.Data.API.ConsensusWorkingMode.Normal;
+                var client = LyraRestClient.Create(_config["network"], Environment.OSVersion.ToString(), "LyraBroker", "1.0");
+                LyraIsReady = (await client.GetSyncState()).SyncState == Lyra.Data.API.ConsensusWorkingMode.Normal;
             }
             catch (Exception ex)
             {
