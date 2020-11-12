@@ -2,7 +2,7 @@
 
 Lyra Broker is a gateway for any platform/languages to connect to the Lyra blockchain.
 
-# Build
+# Build your own release
 
 Build Lyra Core: https://github.com/LYRA-Block-Lattice/Lyra-Core, it will generate Lyra.Data.dll.
 
@@ -23,13 +23,9 @@ to testnet/mainnet. then run LyraBorker.
 
 Lyra Broker use standard gRPC to provide services. Any client/systems can talk by gRPC can use the broker.
 
-We have a wallet running on Node-JS for demo: LyraJsWallet. More examples comming soon.
+Lyra Broker also provides RESTful API.
 
-The Google protobuf file is here: https://github.com/LYRA-Block-Lattice/LyraBroker/blob/master/LyraBroker/Protos/broker.proto
-
-For more language support please visit: https://grpc.io/docs/languages/
-
-# API Documents
+# Documents for gRPC API
 
 For now we only provides these basic API:
 
@@ -40,6 +36,16 @@ For now we only provides these basic API:
 * GetTransactions: query transaction history for a Lyra account.
 
 For advanced features of Lyra, such as token creation, NFT, etc. please use Lyra native web API instead.
+
+We have a wallet running on Node-JS for demo: LyraJsWallet. More examples comming soon.
+
+The Google protobuf file is here: https://github.com/LYRA-Block-Lattice/LyraBroker/blob/master/LyraBroker/Protos/broker.proto
+
+For more language support please visit: https://grpc.io/docs/languages/
+
+# Documents for RESTFul API
+
+Online self document: http://[docker ip]:3505/swagger/index.html
 
 # Security concerns
 
