@@ -14,7 +14,14 @@ to testnet/mainnet. then run LyraBorker.
 
 # Run from docker.io
 
+for testnet:
+
 	docker pull wizdy/lyrabroker:latest
+	docker run -it -p 3505:3505 wizdy/lyrabroker
+
+for mainnet:
+	
+	docker pull wizdy/lyrabroker:mainnet_latest
 	docker run -it -p 3505:3505 wizdy/lyrabroker
 
 # Client Intergration
