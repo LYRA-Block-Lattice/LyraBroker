@@ -45,7 +45,9 @@ For more language support please visit: https://grpc.io/docs/languages/
 
 # Documents for RESTFul API
 
-Online self document: http://[docker ip]:3505/swagger/index.html
+After setup docker container, document can be accessed by: http://[docker ip]:3505/swagger/index.html 
+
+Online live demo: http://brokerdemo.testnet.lyra.live:3505/swagger/index.html
 
 # Security concerns
 
