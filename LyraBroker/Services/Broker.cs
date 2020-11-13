@@ -98,7 +98,7 @@ namespace LyraBroker
 
                 if (result == Lyra.Core.Blocks.APIResultCodes.Success)
                 {
-                    return new SendReply { Success = true };
+                    return new SendReply { Success = true, SendHash = wallet.LastTxHash };
                 }
             }
             catch (Exception ex)
@@ -106,7 +106,7 @@ namespace LyraBroker
                 _logger.LogWarning("In OpenWallet: " + ex.ToString());
             }
 
-            return new SendReply { Success = false };
+            return new SendReply { Success = false, SendHash = "" };
         }
 
         public override async Task<GetTransactionsReply> GetTransactions(GetTransactionsRequest request, ServerCallContext context)

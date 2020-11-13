@@ -137,7 +137,7 @@ namespace LyraBroker
 
                 if (result == Lyra.Core.Blocks.APIResultCodes.Success)
                 {
-                    return new SendResult { Success = true };
+                    return new SendResult { Success = true, SendHash = wallet.LastTxHash };
                 }
             }
             catch (Exception ex)
@@ -145,12 +145,13 @@ namespace LyraBroker
                 _logger.LogWarning("In OpenWallet: " + ex.ToString());
             }
 
-            return new SendResult { Success = false };
+            return new SendResult { Success = false, SendHash = "" };
         }
 
         public class SendResult
         {
             public bool Success { get; set; }
+            public string SendHash { get; set; }
         }
 
         [Route("GetTransactions")]

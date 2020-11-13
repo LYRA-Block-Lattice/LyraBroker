@@ -48,6 +48,7 @@ message SendRequest {
 
 message SendReply {
 	bool success = 1;
+	string sendHash = 2;
 }
 
 message GetTransactionsRequest {

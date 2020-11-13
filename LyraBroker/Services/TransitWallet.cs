@@ -22,7 +22,8 @@ namespace LyraBroker
 
         // for signature handler
         public string AccountId => _accountId;
-        public string UniqId => _uniqId;
+
+        public string LastTxHash { get; private set; }
 
         public TransitWallet(string privateKey, LyraRestClient client)
         {
@@ -184,12 +185,16 @@ namespace LyraBroker
                 //throw new ApplicationException("ValidateTransaction failed");
             }
 
-            //sendBlock.Signature = Signatures.GetSignature(PrivateKey, sendBlock.Hash);
             AuthorizationAPIResult result;
-            //var stopwatch = Stopwatch.StartNew();
             result = await _rpcClient.SendTransfer(sendBlock);
-            //stopwatch.Stop();
-            //PrintConLine($"_rpcClient.SendTransfer: {stopwatch.ElapsedMilliseconds} ms.");
+            if(result.ResultCode == APIResultCodes.Success)
+            {
+                LastTxHash = sendBlock.Hash;
+            }
+            else
+            {
+                LastTxHash = "";
+            }
 
             return result.ResultCode;
         }
