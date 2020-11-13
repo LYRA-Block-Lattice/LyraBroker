@@ -24,12 +24,6 @@ for mainnet:
 	docker pull wizdy/lyrabroker:mainnet_latest
 	docker run -it -p 3505:3505 wizdy/lyrabroker
 
-# Client Intergration
-
-Lyra Broker use standard gRPC to provide services. Any client/systems can talk by gRPC can use the broker.
-
-Lyra Broker also provides RESTful API.
-
 # Lyra Broker generic API specification
 
 For now we only provides these basic API:
@@ -41,6 +35,12 @@ For now we only provides these basic API:
 * GetTransactions: query transaction history for a Lyra account. (Note: This API only show change/balance of LYR)
 
 For advanced features of Lyra, such as token creation, NFT, etc. please use Lyra native web API instead.
+
+# Client Intergration
+
+Lyra Broker use standard gRPC to provide services. Any client/systems can talk by gRPC can use the broker.
+
+Lyra Broker also provides RESTful API.
 
 # Note for gRPC API
 
