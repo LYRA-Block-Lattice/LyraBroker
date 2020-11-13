@@ -30,7 +30,7 @@ Lyra Broker use standard gRPC to provide services. Any client/systems can talk b
 
 Lyra Broker also provides RESTful API.
 
-# Documents for gRPC API
+# Lyra Broker generic API specification
 
 For now we only provides these basic API:
 
@@ -42,13 +42,15 @@ For now we only provides these basic API:
 
 For advanced features of Lyra, such as token creation, NFT, etc. please use Lyra native web API instead.
 
+# Note for gRPC API
+
 We have a wallet running on Node-JS for demo: LyraJsWallet. More examples comming soon.
 
 The Google protobuf file is here: https://github.com/LYRA-Block-Lattice/LyraBroker/blob/master/LyraBroker/Protos/broker.proto
 
 For more language support please visit: https://grpc.io/docs/languages/
 
-# Documents for RESTFul API
+# Note for RESTFul API
 
 After setup docker container, document can be accessed by: http://[docker ip]:3505/swagger/index.html 
 
