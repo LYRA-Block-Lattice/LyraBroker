@@ -160,5 +160,65 @@ namespace LyraBroker
 
             return resp;
         }
+
+        public override async Task<GetTransByHashReply> GetTransByHash(GetTransByHashRequest request, ServerCallContext context)
+        {
+            try
+            {
+                var client = LyraRestClient.Create(_config["network"], Environment.OSVersion.ToString(), "LyraBroker", "1.0");
+
+                var result = await client.GetBlock(request.Hash);
+
+                if (result.ResultCode == Lyra.Core.Blocks.APIResultCodes.Success && result.GetBlock() is TransactionBlock block)
+                {
+                    var tx = new GetTransByHashReply 
+                    { 
+                        TxHash = block.Hash,
+                        Height = block.Height,
+                        Time = Timestamp.FromDateTime(block.TimeStamp)
+                    };
+
+                    tx.TxType = block is SendTransferBlock ? TransactionType.Send : TransactionType.Receive;
+                    if(tx.TxType == TransactionType.Send)
+                    {
+                        tx.OwnerAccountId = block.AccountID;
+                        tx.PeerAccountId = (block as SendTransferBlock).DestinationAccountId;
+
+                        var rcvBlockQuery = await client.GetBlockBySourceHash(block.Hash);
+                        if (rcvBlockQuery.ResultCode == APIResultCodes.Success)
+                        {
+                            tx.IsReceived = true;
+                            tx.RecvHash = rcvBlockQuery.GetBlock().Hash;
+                        }
+                        else
+                        {
+                            tx.IsReceived = false;
+                            tx.RecvHash = "";   //gRPC don't like null
+                        }
+                    }
+                    else
+                    {
+                        tx.OwnerAccountId = block.AccountID;
+
+                        var sndBlockQuery = await client.GetBlock((block as ReceiveTransferBlock).SourceHash);
+                        if (sndBlockQuery.ResultCode == APIResultCodes.Success)
+                        {
+                            tx.PeerAccountId = (sndBlockQuery.GetBlock() as SendTransferBlock).AccountID;
+                        }
+
+                        tx.IsReceived = true;
+                        tx.RecvHash = block.Hash;
+                    }
+
+                    return tx;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("In OpenWallet: " + ex.ToString());
+            }
+
+            return new GetTransByHashReply { TxHash = "" };
+        }
     }
 }

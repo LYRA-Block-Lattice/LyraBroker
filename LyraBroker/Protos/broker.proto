@@ -13,6 +13,7 @@ service BrokerRPC {
   rpc GetBalance (GetBalanceRequest) returns (GetBalanceReply);
   rpc Send (SendRequest) returns (SendReply);
   rpc GetTransactions (GetTransactionsRequest) returns (GetTransactionsReply);
+  rpc GetTransByHash (GetTransByHashRequest) returns (GetTransByHashReply);
 }
 
 message CreateAccountReply {
@@ -72,4 +73,25 @@ message LyraTransaction {
 	string recvHash = 7;
 	double balanceChange = 8;	// the delta of LYR balance, +d for receive, -d for send.
 	double balance = 9;			// the balance of LYR
+}
+
+message GetTransByHashRequest {
+	string hash = 1;
+}
+
+enum TransactionType {
+    Unknown = 0;
+    Send = 1;
+    Receive = 2;
+}
+
+message GetTransByHashReply {
+	string txHash = 1;
+	TransactionType txType = 2;
+	string ownerAccountId = 3;
+	string peerAccountId = 4;
+	int64 height = 5;
+	google.protobuf.Timestamp time = 6;
+	bool isReceived = 7;	
+	string recvHash = 8;
 }
