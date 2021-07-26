@@ -1,3 +1,7 @@
+!Deprecated Note
+
+This project is deprecated. For a new please use lyra-crypto package: [https://github.com/LYRA-Block-Lattice/lyra-crypto](https://github.com/LYRA-Block-Lattice/lyra-crypto)
+
 # About
 
 Lyra Broker is a gateway for any platform/languages to connect to the Lyra blockchain.
