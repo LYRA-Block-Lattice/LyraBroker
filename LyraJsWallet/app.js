@@ -2,8 +2,7 @@
 
 var PROTO_PATH = __dirname + '/../LyraBroker/Protos/broker.proto';
 
-var grpc = require('grpc');
-var google = require('google-protobuf');
+var grpc = require('@grpc/grpc-js');
 var protoLoader = require('@grpc/proto-loader');
 var packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
@@ -14,7 +13,8 @@ var packageDefinition = protoLoader.loadSync(
         defaults: true,
         oneofs: true
     });
-var lyrabroker = grpc.loadPackageDefinition(packageDefinition).broker;
+var pkg = grpc.loadPackageDefinition(packageDefinition);
+var lyrabroker = pkg.broker;
 
 const readline = require("readline");
 const rl = readline.createInterface({
@@ -41,10 +41,8 @@ function AddMinutesToDate(date, minutes) {
 const privateKey = '2vWJCzsWDVWeLf5YnrqMnZPm5J33zupDaEimc1QBnqHgVQR2nR';
 
 function main() {
-    var client = new lyrabroker.BrokerRPC('172.20.79.2:80',
-        grpc.credentials.createInsecure());
-
-
+    var client = new lyrabroker.BrokerRPC('192.168.3.99:5001',
+            grpc.credentials.createInsecure());
 
     // generate a new private/account ID pair
     client.CreateAccount({}, function (err, response) {
@@ -104,7 +102,7 @@ function main() {
                                 client.GetTransactions(txSearchArgs, function (err, response) {
                                     console.log("\n");
                                     response.Transactions.forEach(function (tx) {
-                                        console.log('Height: %d\nTime is: %s\nTransaction: %s\nSender Account ID: %s\nReceiver Account ID: %s\nLYR Balance Changes: %d\nLYR Balance: %d\n',
+                                        console.log('Height: %s\nTime is: %s\nTransaction: %s\nSender Account ID: %s\nReceiver Account ID: %s\nLYR Balance Changes: %d\nLYR Balance: %d\n',
                                             tx.height,
                                             new Date(tx.time.seconds * 1000),
                                             tx.isReceive ? "Receive" : "Send",

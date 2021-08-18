@@ -1,3 +1,4 @@
+using Broker;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Lyra.Core.API;
