@@ -6,6 +6,16 @@ This project is deprecated. For a new please use lyra-crypto package: [https://g
 
 Lyra Broker is a gateway for any platform/languages to connect to the Lyra blockchain.
 
+# Change Log
+
+## ver 1.1
+
+* Upgrade all package to latest version (dotnet, gRPC, and Lyra)
+* gRPC api uses http2 port 3505, swagger/rest api uses http1 port 3506
+* gRPC latest version uses string to present data type 'long'
+
+Note: please note that the first entry of transaction history always show zero balance change
+
 # Build and run your own release
 
 Build LyraBorker.
@@ -20,13 +30,13 @@ to testnet/mainnet. then run LyraBorker.
 
 for testnet:
 
-	docker pull wizdy/lyrabroker:latest
-	docker run -it -p 3505:3505 wizdy/lyrabroker
+	docker pull wizdy/lyrabroker:testnet_latest
+	docker run -it -p 3505:3505 wizdy/lyrabroker:testnet_latest
 
 for mainnet:
 	
 	docker pull wizdy/lyrabroker:mainnet_latest
-	docker run -it -p 3505:3505 wizdy/lyrabroker
+	docker run -it -p 3505:3505 wizdy/lyrabroker:mainnet_latest
 
 # Lyra Broker generic API specification
 
@@ -57,9 +67,7 @@ For more language support please visit: https://grpc.io/docs/languages/
 
 # Note for RESTFul API
 
-After setup docker container, document can be accessed by: http://[docker ip]:3505/swagger/index.html 
-
-Online live demo: http://brokerdemo.testnet.lyra.live:3505/swagger/index.html
+After setup docker container, document can be accessed by: http://[docker ip]:3506/swagger/index.html 
 
 # Security concerns
 
