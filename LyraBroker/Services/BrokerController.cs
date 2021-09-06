@@ -53,7 +53,7 @@ namespace LyraBroker
             try
             {
                 var client = LyraRestClient.Create(_config["network"], Environment.OSVersion.ToString(), "LyraBroker", "1.0");
-                LyraIsReady = (await client.GetSyncState()).SyncState == Lyra.Data.API.ConsensusWorkingMode.Normal;
+                LyraIsReady = (await client.GetSyncStateAsync()).SyncState == Lyra.Data.API.ConsensusWorkingMode.Normal;
             }
             catch (Exception ex)
             {
@@ -163,7 +163,7 @@ namespace LyraBroker
             try
             {
                 var client = LyraRestClient.Create(_config["network"], Environment.OSVersion.ToString(), "LyraBroker", "1.0");
-                var result = await client.SearchTransactions(accountId,
+                var result = await client.SearchTransactionsAsync(accountId,
                             startTimeTicks,
                             endTimeTicks,
                             count);
@@ -235,7 +235,7 @@ namespace LyraBroker
             {
                 var client = LyraRestClient.Create(_config["network"], Environment.OSVersion.ToString(), "LyraBroker", "1.0");
 
-                var result = await client.GetBlock(hash);
+                var result = await client.GetBlockAsync(hash);
 
                 if (result.ResultCode == Lyra.Core.Blocks.APIResultCodes.Success && result.GetBlock() is TransactionBlock block)
                 {
@@ -252,7 +252,7 @@ namespace LyraBroker
                         tx.OwnerAccountId = block.AccountID;
                         tx.PeerAccountId = (block as SendTransferBlock).DestinationAccountId;
 
-                        var rcvBlockQuery = await client.GetBlockBySourceHash(block.Hash);
+                        var rcvBlockQuery = await client.GetBlockBySourceHashAsync(block.Hash);
                         if (rcvBlockQuery.ResultCode == APIResultCodes.Success)
                         {
                             tx.IsReceived = true;
@@ -268,7 +268,7 @@ namespace LyraBroker
                     {
                         tx.OwnerAccountId = block.AccountID;
 
-                        var sndBlockQuery = await client.GetBlock((block as ReceiveTransferBlock).SourceHash);
+                        var sndBlockQuery = await client.GetBlockAsync((block as ReceiveTransferBlock).SourceHash);
                         if(sndBlockQuery.ResultCode == APIResultCodes.Success)
                         {
                             tx.PeerAccountId = (sndBlockQuery.GetBlock() as SendTransferBlock).AccountID;

@@ -47,7 +47,7 @@ namespace LyraBroker
 
         public async Task<APIResultCodes> ReceiveAsync()
         {
-            var blockresult = await _rpcClient.GetLastServiceBlock();
+            var blockresult = await _rpcClient.GetLastServiceBlockAsync();
 
             if (blockresult.ResultCode != APIResultCodes.Success)
                 return blockresult.ResultCode;
@@ -59,7 +59,7 @@ namespace LyraBroker
 
             try
             {
-                var lookup_result = await _rpcClient.LookForNewTransfer(_accountId, _signer(lastServiceBlock.Hash));
+                var lookup_result = await _rpcClient.LookForNewTransferAsync(_accountId, _signer(lastServiceBlock.Hash));
                 int max_counter = 0;
 
                 while (lookup_result.Successful() && max_counter < 100) // we don't want to enter an endless loop...
@@ -72,7 +72,7 @@ namespace LyraBroker
                     if (!receive_result.Successful())
                         return receive_result.ResultCode;
 
-                    lookup_result = await _rpcClient.LookForNewTransfer(_accountId, _signer(lastServiceBlock.Hash));
+                    lookup_result = await _rpcClient.LookForNewTransferAsync(_accountId, _signer(lastServiceBlock.Hash));
                 }
 
                 // the fact that do one sent us any money does not mean this call failed...
@@ -106,7 +106,7 @@ namespace LyraBroker
                 throw new Exception("No balance");
             }
 
-            var blockresult = await _rpcClient.GetLastServiceBlock();
+            var blockresult = await _rpcClient.GetLastServiceBlockAsync();
 
             if (blockresult.ResultCode != APIResultCodes.Success)
                 return blockresult.ResultCode;
@@ -186,7 +186,7 @@ namespace LyraBroker
             }
 
             AuthorizationAPIResult result;
-            result = await _rpcClient.SendTransfer(sendBlock);
+            result = await _rpcClient.SendTransferAsync(sendBlock);
             if(result.ResultCode == APIResultCodes.Success)
             {
                 LastTxHash = sendBlock.Hash;
@@ -204,7 +204,7 @@ namespace LyraBroker
             if (await GetLocalAccountHeightAsync() == 0) // if this is new account with no blocks
                 return await OpenStandardAccountWithReceiveBlock(new_transfer_info);
 
-            var svcBlockResult = await _rpcClient.GetLastServiceBlock();
+            var svcBlockResult = await _rpcClient.GetLastServiceBlockAsync();
             if (svcBlockResult.ResultCode != APIResultCodes.Success)
             {
                 throw new Exception("Unable to get latest service block.");
@@ -243,14 +243,14 @@ namespace LyraBroker
 
             //receiveBlock.Signature = Signatures.GetSignature(PrivateKey, receiveBlock.Hash);
 
-            var result = await _rpcClient.ReceiveTransfer(receiveBlock);
+            var result = await _rpcClient.ReceiveTransferAsync(receiveBlock);
 
             return result;
         }
 
         private async Task<AuthorizationAPIResult> OpenStandardAccountWithReceiveBlock(NewTransferAPIResult new_transfer_info)
         {
-            var svcBlockResult = await _rpcClient.GetLastServiceBlock();
+            var svcBlockResult = await _rpcClient.GetLastServiceBlockAsync();
             if (svcBlockResult.ResultCode != APIResultCodes.Success)
             {
                 throw new Exception("Unable to get latest service block.");
@@ -274,7 +274,7 @@ namespace LyraBroker
 
             //openReceiveBlock.Signature = Signatures.GetSignature(PrivateKey, openReceiveBlock.Hash);
 
-            var result = await _rpcClient.ReceiveTransferAndOpenAccount(openReceiveBlock);
+            var result = await _rpcClient.ReceiveTransferAndOpenAccountAsync(openReceiveBlock);
 
             //PrintCon(string.Format("{0}> ", AccountName));
             return result;
@@ -291,7 +291,7 @@ namespace LyraBroker
 
         private async Task<TransactionBlock> GetLatestBlockAsync()
         {
-            var blockResult = await _rpcClient.GetLastBlock(_accountId);
+            var blockResult = await _rpcClient.GetLastBlockAsync(_accountId);
             if (blockResult.ResultCode == APIResultCodes.Success)
             {
                 return blockResult.GetBlock() as TransactionBlock;
