@@ -219,6 +219,7 @@ namespace LyraBroker
                 Balances = new Dictionary<string, long>(),
                 Fee = 0,
                 FeeType = AuthorizationFeeTypes.NoFee,
+                FeeCode = LyraGlobal.OFFICIALTICKERCODE,
                 NonFungibleToken = new_transfer_info.NonFungibleToken
             };
 
@@ -265,6 +266,7 @@ namespace LyraBroker
                 Balances = new Dictionary<string, long>(),
                 Fee = 0,
                 FeeType = AuthorizationFeeTypes.NoFee,
+                FeeCode = LyraGlobal.OFFICIALTICKERCODE,
                 NonFungibleToken = new_transfer_info.NonFungibleToken,
                 VoteFor = null
             };
