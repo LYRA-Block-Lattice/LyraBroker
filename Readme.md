@@ -31,12 +31,16 @@ to testnet/mainnet. then run LyraBorker.
 for testnet:
 
 	docker pull wizdy/lyrabroker:testnet_latest
-	docker run -d -it -p 3505:3505 -p 3506:3506 wizdy/lyrabroker:testnet_latest
+	docker run -d --restart unless-stopped -it -p 3505:3505 -p 3506:3506 wizdy/lyrabroker:testnet_latest
 
 for mainnet:
 	
 	docker pull wizdy/lyrabroker:mainnet_latest
-	docker run -d -it -p 3505:3505 -p 3506:3506 wizdy/lyrabroker:mainnet_latest
+	docker run -d --restart unless-stopped -it -p 3505:3505 -p 3506:3506 wizdy/lyrabroker:mainnet_latest
+
+# Demo broker for testnet
+
+http://brokerdemo.testnet.lyra.live:3506/swagger/index.html
 
 # Lyra Broker generic API specification
 
