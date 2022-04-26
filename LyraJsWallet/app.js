@@ -102,11 +102,13 @@ function main() {
                                 client.GetTransactions(txSearchArgs, function (err, response) {
                                     console.log("\n");
                                     response.Transactions.forEach(function (tx) {
-                                        console.log('Height: %s\nTime is: %s\nTransaction: %s\nSender Account ID: %s\nReceiver Account ID: %s\nLYR Balance Changes: %d\nLYR Balance: %d\n',
+                                        console.log('Height: %s\nTime is: %s\nTransaction: %s\nSend Hash: %s\nSender Account ID: %s\nReceive Hash: %s\nReceiver Account ID: %s\nLYR Balance Changes: %d\nLYR Balance: %d\n',
                                             tx.height,
                                             new Date(tx.time.seconds * 1000),
                                             tx.isReceive ? "Receive" : "Send",
+                                            tx.sendHash,
                                             tx.sendAccountId,
+                                            tx.recvHash,
                                             tx.recvAccountId,
                                             tx.balanceChange,
                                             tx.balance
