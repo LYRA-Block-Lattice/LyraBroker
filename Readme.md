@@ -47,6 +47,9 @@ http://brokerdemo.testnet.lyra.live:3506/swagger/index.html
 For now we only provides these basic API:
 
 * CreateAccount: create a new account (private/public key pair) for Lyra.
+* ValidateAccountID: validate a Lyra account ID.
+* ValidatePrivateKey: validate a Lyra private key.
+* GetAccountIdFromPrivateKey: get account ID from a private key.
 * GetStatus: get the current status of Lyra network.
 * GetBalance: get latest balance of account. (implicit receive);
 * Send: send funds to other account.

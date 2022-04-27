@@ -8,12 +8,31 @@ import "google/protobuf/timestamp.proto";
 package broker;
 
 service BrokerRPC {
+  rpc ValidateAccountID (AccountIdRequest) returns (ValidateReply);
+  rpc ValidatePrivateKey (PrivateKeyRequest) returns (ValidateReply);
+  rpc GetAccountIdFromPrivateKey (PrivateKeyRequest) returns (AccountIdReply);
   rpc CreateAccount (google.protobuf.Empty) returns (CreateAccountReply);
   rpc GetStatus (google.protobuf.Empty) returns (GetStatusReply);
   rpc GetBalance (GetBalanceRequest) returns (GetBalanceReply);
   rpc Send (SendRequest) returns (SendReply);
   rpc GetTransactions (GetTransactionsRequest) returns (GetTransactionsReply);
   rpc GetTransByHash (GetTransByHashRequest) returns (GetTransByHashReply);
+}
+
+message AccountIdRequest {
+	string accountId = 1;
+}
+
+message PrivateKeyRequest {
+	string privateKey = 1;
+}
+
+message AccountIdReply {
+	string accountId = 1;
+}
+
+message ValidateReply {
+	bool isGood = 1;
 }
 
 message CreateAccountReply {

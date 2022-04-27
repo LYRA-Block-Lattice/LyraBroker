@@ -27,6 +27,30 @@ namespace LyraBroker
             _config = configuration;
         }
 
+        public override Task<ValidateReply> ValidateAccountID(AccountIdRequest request, ServerCallContext context)
+        {
+            return Task.FromResult(new ValidateReply
+            {
+                IsGood = Signatures.ValidateAccountId(request.AccountId)
+            });
+        }
+
+        public override Task<ValidateReply> ValidatePrivateKey(PrivateKeyRequest request, ServerCallContext context)
+        {
+            return Task.FromResult(new ValidateReply
+            {
+                IsGood = Signatures.ValidatePrivateKey(request.PrivateKey)
+            });
+        }
+
+        public override Task<AccountIdReply> GetAccountIdFromPrivateKey(PrivateKeyRequest request, ServerCallContext context)
+        {
+            return Task.FromResult(new AccountIdReply
+            {
+                AccountId = Signatures.GetAccountIdFromPrivateKey(request.PrivateKey)
+            });
+        }
+
         public override Task<CreateAccountReply> CreateAccount(Empty request, ServerCallContext context)
         {
             (string privateKey, string accountId) = Signatures.GenerateWallet();

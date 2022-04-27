@@ -45,6 +45,27 @@ namespace LyraBroker
             public string AccountId { get; set; }
         }
 
+        [Route("ValidateAccountID")]
+        [HttpGet]
+        public bool ValidateAccountID(string accountId)
+        {
+            return Signatures.ValidateAccountId(accountId);
+        }
+
+        [Route("ValidatePrivateKey")]
+        [HttpGet]
+        public bool ValidatePrivateKey(string privateKey)
+        {
+            return Signatures.ValidatePrivateKey(privateKey);
+        }
+
+        [Route("GetAccountIdFromPrivateKey")]
+        [HttpGet]
+        public string GetAccountIdFromPrivateKey(string privateKey)
+        {
+            return Signatures.GetAccountIdFromPrivateKey(privateKey);
+        }
+
         [Route("GetStatus")]
         [HttpGet]
         public async Task<LyraStatus> GetStatus()
