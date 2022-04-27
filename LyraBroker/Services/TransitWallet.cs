@@ -12,6 +12,7 @@ namespace LyraBroker
 {
     public class TransitWallet
     {
+        delegate Task<string> SignHandler(string msg);
         private string _uniqId;
 
         private string _privateKey;
@@ -34,7 +35,7 @@ namespace LyraBroker
 
             _rpcClient = client;
 
-            _signer = (hash) => Signatures.GetSignature(_privateKey, hash, _accountId);
+            _signer = (hash) => Task.FromResult(Signatures.GetSignature(_privateKey, hash, _accountId));
         }
 
         public async Task<Dictionary<string, long>> GetBalanceAsync()
@@ -59,7 +60,7 @@ namespace LyraBroker
 
             try
             {
-                var lookup_result = await _rpcClient.LookForNewTransferAsync(_accountId, _signer(lastServiceBlock.Hash));
+                var lookup_result = await _rpcClient.LookForNewTransfer2Async(_accountId, await _signer(lastServiceBlock.Hash));
                 int max_counter = 0;
 
                 while (lookup_result.Successful() && max_counter < 100) // we don't want to enter an endless loop...
@@ -72,7 +73,7 @@ namespace LyraBroker
                     if (!receive_result.Successful())
                         return receive_result.ResultCode;
 
-                    lookup_result = await _rpcClient.LookForNewTransferAsync(_accountId, _signer(lastServiceBlock.Hash));
+                    lookup_result = await _rpcClient.LookForNewTransfer2Async(_accountId, await _signer(lastServiceBlock.Hash));
                 }
 
                 // the fact that do one sent us any money does not mean this call failed...
@@ -177,7 +178,7 @@ namespace LyraBroker
                 if (!(sendBlock.Balances.ContainsKey(balance.Key)))
                     sendBlock.Balances.Add(balance.Key, balance.Value);
 
-            sendBlock.InitializeBlock(previousBlock, _signer);
+            await sendBlock.InitializeBlockAsync(previousBlock, (hash) => Task.FromResult(Signatures.GetSignature(_privateKey, hash, _accountId)));
 
             if (!sendBlock.ValidateTransaction(previousBlock))
             {
@@ -199,7 +200,7 @@ namespace LyraBroker
             return result.ResultCode;
         }
 
-        private async Task<AuthorizationAPIResult> ReceiveTransfer(NewTransferAPIResult new_transfer_info)
+        private async Task<AuthorizationAPIResult> ReceiveTransfer(NewTransferAPIResult2 new_transfer_info)
         {
             if (await GetLocalAccountHeightAsync() == 0) // if this is new account with no blocks
                 return await OpenStandardAccountWithReceiveBlock(new_transfer_info);
@@ -225,19 +226,19 @@ namespace LyraBroker
 
             TransactionBlock latestBlock = await GetLatestBlockAsync();
 
-            var newBalance = new_transfer_info.Transfer.Amount;
-            // if the recipient's account has this token already, add the transaction amount to the existing balance
-            if (latestBlock.Balances.ContainsKey(new_transfer_info.Transfer.TokenCode))
-                newBalance += latestBlock.Balances[new_transfer_info.Transfer.TokenCode].ToBalanceDecimal();
+            //var latestBalances = latestBlock.Balances.ToDecimalDict();
+            var recvBalances = latestBlock.Balances.ToDecimalDict();
+            foreach (var chg in new_transfer_info.Transfer.Changes)
+            {
+                if (recvBalances.ContainsKey(chg.Key))
+                    recvBalances[chg.Key] += chg.Value;
+                else
+                    recvBalances.Add(chg.Key, chg.Value);
+            }
 
-            receiveBlock.Balances.Add(new_transfer_info.Transfer.TokenCode, newBalance.ToBalanceLong());
+            receiveBlock.Balances = recvBalances.ToLongDict();
 
-            // transfer unchanged token balances from the previous block
-            foreach (var balance in latestBlock.Balances)
-                if (!(receiveBlock.Balances.ContainsKey(balance.Key)))
-                    receiveBlock.Balances.Add(balance.Key, balance.Value);
-
-            receiveBlock.InitializeBlock(latestBlock, _signer);
+            await receiveBlock.InitializeBlockAsync(latestBlock, (hash) => Task.FromResult(Signatures.GetSignature(_privateKey, hash, _accountId)));
 
             if (!receiveBlock.ValidateTransaction(latestBlock))
                 throw new ApplicationException("ValidateTransaction failed");
@@ -249,7 +250,7 @@ namespace LyraBroker
             return result;
         }
 
-        private async Task<AuthorizationAPIResult> OpenStandardAccountWithReceiveBlock(NewTransferAPIResult new_transfer_info)
+        private async Task<AuthorizationAPIResult> OpenStandardAccountWithReceiveBlock(NewTransferAPIResult2 new_transfer_info)
         {
             var svcBlockResult = await _rpcClient.GetLastServiceBlockAsync();
             if (svcBlockResult.ResultCode != APIResultCodes.Success)
@@ -271,8 +272,12 @@ namespace LyraBroker
                 VoteFor = null
             };
 
-            openReceiveBlock.Balances.Add(new_transfer_info.Transfer.TokenCode, new_transfer_info.Transfer.Amount.ToBalanceLong());
-            openReceiveBlock.InitializeBlock(null, _signer);
+            foreach (var chg in new_transfer_info.Transfer.Changes)
+            {
+                openReceiveBlock.Balances.Add(chg.Key, chg.Value.ToBalanceLong());
+            }
+
+            await openReceiveBlock.InitializeBlockAsync(null, (hash) => Task.FromResult(Signatures.GetSignature(_privateKey, hash, _accountId)));
 
             //openReceiveBlock.Signature = Signatures.GetSignature(PrivateKey, openReceiveBlock.Hash);
 
