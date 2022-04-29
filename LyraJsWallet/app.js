@@ -44,11 +44,15 @@ function main() {
     var client = new lyrabroker.BrokerRPC('localhost:3505',
             grpc.credentials.createInsecure());
 
+    var testPvtKey = "";
+    var testActId = "";
     // generate a new private/account ID pair
     client.CreateAccount({}, function (err, response) {
+        testPvtKey = response.privateKey;
+        testActId = response.accountId;
         console.log('You just created a new Lyra account:\n')
-        console.log('Your private key is %s\n', response.privateKey);
-        console.log('Your account ID is %s\n', response.accountId);
+        console.log('Your private key is %s\n', testPvtKey);
+        console.log('Your account ID is %s\n', testActId);
     });
 
     // check api node status
@@ -71,7 +75,7 @@ function main() {
                     var sendArgs = {
                         privateKey: privateKey,
                         amount: 10,
-                        destAccountId: 'LT8din6wm6SyfnqmmJN7jSnyrQjqAaRmixe2kKtTY4xpDBRtTxBmuHkJU9iMru5yqcNyL3Q21KDvHK45rkUS4f8tkXBBS3',
+                        destAccountId: testActId,
                         ticker: 'LYR'
                     };
 
@@ -80,7 +84,7 @@ function main() {
                     client.Send(sendArgs, function (err, response) {
                         if (response.success) {
                             console.log('Send success!\n');
-                            client.GetBalance({ privateKey: privateKey }, function (err, response) {
+                            client.GetBalance({ privateKey: testPvtKey }, function (err, response) {
                                 console.log('Your new balance is:');
                                 response.balances.forEach(function (balance) {
                                     console.log('%s: %d', balance.ticker, balance.balance);
